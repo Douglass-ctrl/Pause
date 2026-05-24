@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "PAUSE",
+    "slug": "pause",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "pause",
+    "splash": {
+      "backgroundColor": "#f4f7f3"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.pause.recovery",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "PAUSE uses microphone access only when you choose to speak to the support coach."
+      }
+    },
+    "android": {
+      "package": "com.pause.recovery",
+      "permissions": [
+        "RECORD_AUDIO"
+      ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "replace-with-eas-project-id"
+      }
+    }
+  }
+}

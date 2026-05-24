@@ -1,0 +1,1082 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PAUSE</title>
+  <style>
+    :root {
+      --bg: #f4f7f3;
+      --surface: #ffffff;
+      --soft: #e9f1ec;
+      --ink: #111b1d;
+      --muted: #667276;
+      --line: #d8e2dd;
+      --deep: #0c3f3d;
+      --teal: #13706a;
+      --mint: #94d2bb;
+      --blue: #456f9a;
+      --amber: #dba85a;
+      --coral: #c8675b;
+      --lavender: #8580b8;
+      --shadow: 0 16px 36px rgba(12, 63, 61, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 16% 12%, rgba(148, 210, 187, 0.24), transparent 30%),
+        linear-gradient(135deg, #eef6f1 0%, #f8faf8 52%, #eef4f7 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+    }
+
+    .showcase {
+      width: min(1180px, 100%);
+      display: grid;
+      grid-template-columns: 390px minmax(0, 1fr);
+      gap: 36px;
+      align-items: center;
+    }
+
+    .phone {
+      width: 390px;
+      height: 844px;
+      background: var(--bg);
+      border: 1px solid rgba(17, 27, 29, 0.14);
+      border-radius: 38px;
+      box-shadow: 0 24px 80px rgba(10, 34, 35, 0.22);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .status {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--ink);
+    }
+
+    .battery {
+      width: 24px;
+      height: 12px;
+      border: 1.5px solid var(--ink);
+      border-radius: 4px;
+      padding: 2px;
+    }
+
+    .battery::before {
+      content: "";
+      display: block;
+      width: 14px;
+      height: 100%;
+      border-radius: 2px;
+      background: var(--ink);
+    }
+
+    .app {
+      height: calc(100% - 44px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screen {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      display: none;
+      padding: 18px 24px 112px;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      margin: 0 0 12px;
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 31px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .lead {
+      margin-top: 12px;
+      max-width: 318px;
+      font-size: 15px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .card.soft {
+      background: var(--soft);
+      box-shadow: none;
+    }
+
+    .hero {
+      background: var(--deep);
+      color: white;
+      border: 0;
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero p {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .primary {
+      width: 100%;
+      min-height: 56px;
+      border-radius: 17px;
+      background: var(--teal);
+      color: white;
+      font-size: 15px;
+      font-weight: 900;
+      box-shadow: 0 12px 22px rgba(19, 112, 106, 0.24);
+    }
+
+    .primary.large {
+      min-height: 96px;
+      font-size: 21px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, var(--teal), var(--deep));
+    }
+
+    .primary.coral {
+      background: var(--coral);
+      box-shadow: 0 12px 22px rgba(200, 103, 91, 0.2);
+    }
+
+    .secondary,
+    .chip {
+      min-height: 38px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--teal);
+      padding: 0 14px;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .field {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fbfdfc;
+      padding: 13px;
+    }
+
+    .field label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    textarea,
+    input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 58px;
+      resize: none;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mini-card,
+    .option {
+      border: 1px solid var(--line);
+      background: #fbfdfc;
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .mini-card {
+      min-height: 88px;
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .mini-card b {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .mini-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .option-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .option {
+      min-height: 48px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .chat {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .bubble {
+      max-width: 88%;
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .bubble.ai {
+      background: var(--soft);
+      color: var(--ink);
+      border-bottom-left-radius: 6px;
+    }
+
+    .bubble.user {
+      justify-self: end;
+      background: var(--teal);
+      color: white;
+      border-bottom-right-radius: 6px;
+    }
+
+    .composer {
+      display: grid;
+      grid-template-columns: 1fr 42px 42px;
+      gap: 8px;
+      margin-top: 14px;
+      align-items: center;
+    }
+
+    .composer input {
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fbfdfc;
+      padding: 0 14px;
+      font-size: 13px;
+    }
+
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--teal);
+      font-weight: 900;
+    }
+
+    .timer {
+      display: grid;
+      place-items: center;
+      width: 94px;
+      height: 94px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--deep);
+      font-size: 28px;
+      font-weight: 900;
+      border: 1px solid var(--line);
+    }
+
+    .meter-value {
+      color: var(--coral);
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 0.9;
+    }
+
+    input[type="range"] {
+      accent-color: var(--coral);
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .list-row {
+      min-height: 46px;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .icon.teal { background: var(--teal); }
+    .icon.blue { background: var(--blue); }
+    .icon.amber { background: var(--amber); color: #31210b; }
+    .icon.coral { background: var(--coral); }
+    .icon.lavender { background: var(--lavender); }
+
+    .list-row strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .list-row span {
+      color: var(--muted);
+      display: block;
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 4px;
+    }
+
+    .toggle {
+      width: 46px;
+      height: 26px;
+      border-radius: 999px;
+      background: var(--teal);
+      padding: 4px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .toggle.off {
+      background: var(--line);
+      justify-content: flex-start;
+    }
+
+    .toggle::before {
+      content: "";
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: white;
+    }
+
+    .bars {
+      display: flex;
+      align-items: end;
+      gap: 7px;
+      height: 66px;
+    }
+
+    .bar {
+      width: 10px;
+      border-radius: 999px;
+      background: var(--mint);
+    }
+
+    .bar:nth-child(2n) { background: var(--blue); }
+    .bar:nth-child(3n) { background: var(--amber); }
+
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 86px;
+      background: rgba(255, 255, 255, 0.94);
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 10px 10px 18px;
+      backdrop-filter: blur(16px);
+    }
+
+    .tab {
+      min-width: 0;
+      border-radius: 16px;
+      background: transparent;
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      gap: 2px;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .tab svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2.25;
+    }
+
+    .tab.active {
+      color: var(--teal);
+      background: var(--soft);
+    }
+
+    .notes {
+      display: grid;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: var(--deep);
+      color: var(--mint);
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .notes h1 {
+      font-size: clamp(34px, 4vw, 58px);
+      max-width: 780px;
+    }
+
+    .notes .summary {
+      max-width: 680px;
+      color: #4e5b5f;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      max-width: 720px;
+    }
+
+    .feature {
+      min-height: 128px;
+      border: 1px solid rgba(19, 112, 106, 0.16);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.76);
+      padding: 18px;
+      box-shadow: 0 12px 30px rgba(12, 63, 61, 0.08);
+    }
+
+    .feature b {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      font-size: 13px;
+    }
+
+    @media (max-width: 860px) {
+      .page {
+        padding: 18px 12px 28px;
+      }
+
+      .showcase {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .notes {
+        order: -1;
+        max-width: 390px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .phone {
+        width: 100%;
+        height: min(844px, calc(100vh - 24px));
+        border-radius: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="showcase" aria-label="PAUSE app prototype">
+      <div class="phone">
+        <div class="status" aria-hidden="true">
+          <span>9:41</span>
+          <div class="status-icons">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="battery"></span>
+          </div>
+        </div>
+
+        <div class="app">
+          <section class="screen" data-screen="onboarding">
+            <p class="eyebrow">Onboarding</p>
+            <h1>Private support, on your terms.</h1>
+            <p class="lead">PAUSE explains what the support coach can and cannot do before a user starts.</p>
+
+            <div class="stack">
+              <article class="card hero">
+                <h2>The coach is not here to discuss gambling.</h2>
+                <p style="margin-top: 8px;">It is here to help you pause, delay action, reflect, and take one protective step.</p>
+              </article>
+
+              <article class="card">
+                <h2>Setup checklist</h2>
+                <div class="list">
+                  <div class="list-row"><div class="icon teal">1</div><div><strong>Privacy preference</strong><span>Choose what gets saved.</span></div><span class="toggle"></span></div>
+                  <div class="list-row"><div class="icon blue">2</div><div><strong>Protection plan</strong><span>Add blocks, payday plan, and reminders.</span></div><span class="toggle"></span></div>
+                  <div class="list-row"><div class="icon amber">3</div><div><strong>Optional contact</strong><span>Add a trusted person only if you want.</span></div><span class="toggle off"></span></div>
+                </div>
+              </article>
+
+              <button class="primary" data-jump="home">Start privately</button>
+            </div>
+          </section>
+
+          <section class="screen active" data-screen="home">
+            <p class="eyebrow">PAUSE</p>
+            <h1>Private support before you act.</h1>
+            <p class="lead">A first-line support coach for the moment an urge shows up.</p>
+
+            <div class="stack">
+              <button class="primary large" data-jump="support">I want to gamble</button>
+
+              <article class="card">
+                <div class="row">
+                  <div>
+                    <h2>Today's recovery status</h2>
+                    <p style="margin-top: 6px;">Guardrails active. Last check-in completed this morning.</p>
+                  </div>
+                  <span class="chip">Private</span>
+                </div>
+              </article>
+
+              <article class="card soft">
+                <h2>Quick check-in</h2>
+                <div class="mini-grid">
+                  <button class="mini-card" data-jump="checkin"><b>Mood</b><span>Restless but steady.</span></button>
+                  <button class="mini-card" data-jump="checkin"><b>Urge</b><span>Low right now.</span></button>
+                </div>
+              </article>
+
+              <article class="card">
+                <h2>Last protective action</h2>
+                <div class="list">
+                  <div class="list-row">
+                    <div class="icon teal">P</div>
+                    <div><strong>Closed a risky app</strong><span>Then started a 5 minute delay.</span></div>
+                    <button class="secondary" data-jump="plan">Plan</button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="support">
+            <p class="eyebrow">Urge Support</p>
+            <h1>Stay with me for 60 seconds.</h1>
+            <p class="lead">Tell PAUSE what is happening. Type, speak, or choose a quick response.</p>
+
+            <div class="stack">
+              <article class="card hero">
+                <div class="row">
+                  <div>
+                    <p class="eyebrow" style="color: var(--mint); margin-bottom: 8px;">Delay timer</p>
+                    <h2>Create distance first</h2>
+                    <p style="margin-top: 8px;">Close the gambling app, then tell me: closed or still open?</p>
+                  </div>
+                  <div class="timer" id="delayTimer">05:00</div>
+                </div>
+                <button class="primary" id="delayButton">Start 5 minute pause</button>
+              </article>
+
+              <article class="card">
+                <h2>Private Support Coach</h2>
+                <div class="chat">
+                  <div class="bubble user">I am close to depositing money.</div>
+                  <div class="bubble ai">I am glad you told me before acting. Let us create distance between the urge and the next step.</div>
+                  <div class="bubble ai">Quick check: how strong is the urge from 1-10, and are you chasing a loss?</div>
+                </div>
+                <div class="composer">
+                  <input id="coachInput" value="Feeling stressed and alone" aria-label="Message the support coach" />
+                  <button class="icon-button" aria-label="Voice input">Mic</button>
+                  <button class="icon-button" id="sendCoach" aria-label="Send message">Send</button>
+                </div>
+              </article>
+
+              <article class="card">
+                <h2>Quick risk answers</h2>
+                <div class="option-grid">
+                  <button class="option quick-reply">Chasing losses <span>&gt;</span></button>
+                  <button class="option quick-reply">About to deposit <span>&gt;</span></button>
+                  <button class="option quick-reply">Just bored <span>&gt;</span></button>
+                  <button class="option quick-reply">Feeling stressed <span>&gt;</span></button>
+                </div>
+              </article>
+
+              <article class="card soft">
+                <h2>Intervention menu</h2>
+                <div class="mini-grid">
+                  <div class="mini-card"><b>Breathing reset</b><span>Inhale 4, hold 4, exhale 6.</span></div>
+                  <div class="mini-card"><b>Play it forward</b><span>Picture the next hour honestly.</span></div>
+                  <div class="mini-card"><b>Loss-chasing stop</b><span>Pause before trying to repair pain with risk.</span></div>
+                  <div class="mini-card"><b>Blocking prompt</b><span>Open protection steps now.</span></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="checkin">
+            <p class="eyebrow">Daily Check-In</p>
+            <h1>Notice the day without judgment.</h1>
+            <p class="lead">A quick private check-in helps PAUSE understand patterns and risk.</p>
+
+            <div class="stack">
+              <article class="card">
+                <div class="row">
+                  <div>
+                    <h2>Urge level</h2>
+                    <p style="margin-top: 6px;">How strong is the urge today?</p>
+                  </div>
+                  <div class="meter-value" id="urgeValue">4</div>
+                </div>
+                <input id="urgeRange" type="range" min="1" max="10" value="4" aria-label="Daily urge level" />
+              </article>
+
+              <article class="card">
+                <h2>Daily details</h2>
+                <div class="mini-grid">
+                  <div class="mini-card"><b>Mood</b><span>Anxious, tired, hopeful.</span></div>
+                  <div class="mini-card"><b>Trigger</b><span>Payday and free evening.</span></div>
+                  <div class="mini-card"><b>Gambled today?</b><span>No. Log if needed.</span></div>
+                  <div class="mini-card"><b>Intention</b><span>Delay before any risky action.</span></div>
+                </div>
+              </article>
+
+              <button class="primary">Save check-in</button>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="insights">
+            <p class="eyebrow">Before the Bet</p>
+            <h1>Get support before the urge peaks.</h1>
+            <p class="lead">Free helps in the moment. Paid helps you see the risky moment coming.</p>
+
+            <div class="stack">
+              <article class="card hero">
+                <div>
+                  <p class="eyebrow" style="color: var(--mint); margin-bottom: 8px;">Paid prevention promise</p>
+                  <h2>PAUSE learns your risk patterns privately.</h2>
+                  <p style="margin-top: 8px;">Upgrade when you want support windows during usual high-risk times, payday planning, weekly summaries, and more personalized protection.</p>
+                </div>
+              </article>
+
+              <article class="card">
+                <div class="row">
+                  <div>
+                    <h2>Money not gambled</h2>
+                    <div style="color: var(--teal); font-size: 34px; font-weight: 900; margin-top: 10px;">$840</div>
+                    <p style="margin-top: 6px;">Estimated protected money this month.</p>
+                  </div>
+                  <div class="bars" aria-hidden="true">
+                    <span class="bar" style="height: 34px;"></span>
+                    <span class="bar" style="height: 48px;"></span>
+                    <span class="bar" style="height: 28px;"></span>
+                    <span class="bar" style="height: 62px;"></span>
+                    <span class="bar" style="height: 42px;"></span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="card">
+                <h2>Common patterns</h2>
+                <div class="mini-grid">
+                  <div class="mini-card"><b>High-risk time</b><span>Friday, 8-11 PM.</span></div>
+                  <div class="mini-card"><b>Trigger</b><span>Stress plus being alone.</span></div>
+                  <div class="mini-card"><b>Urge frequency</b><span>3 strong urges this week.</span></div>
+                  <div class="mini-card"><b>Risk pattern</b><span>Risk rises after deposits.</span></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="plan">
+            <p class="eyebrow">Protection Plan</p>
+            <h1>Make the next urge harder to act on.</h1>
+            <p class="lead">Use practical blocks and support steps before risk gets loud.</p>
+
+            <div class="stack">
+              <article class="card">
+                <h2>Protection checklist</h2>
+                <div class="list">
+                  <div class="list-row"><div class="icon teal">1</div><div><strong>Self-exclusion checklist</strong><span>Review active exclusions and renew dates.</span></div><span class="toggle"></span></div>
+                  <div class="list-row"><div class="icon blue">2</div><div><strong>App and site blocking</strong><span>Blocking tools enabled on phone and laptop.</span></div><span class="toggle"></span></div>
+                  <div class="list-row"><div class="icon amber">3</div><div><strong>Bank gambling block</strong><span>Reminder to confirm card-level block.</span></div><span class="toggle off"></span></div>
+                  <div class="list-row"><div class="icon coral">4</div><div><strong>Payday risk plan</strong><span>Move savings first, limit available cash.</span></div><span class="toggle"></span></div>
+                  <div class="list-row"><div class="icon lavender">5</div><div><strong>Support contact</strong><span>Optional low-pressure message ready.</span></div><button class="secondary">Draft</button></div>
+                </div>
+              </article>
+
+              <article class="card soft">
+                <h2>Message draft</h2>
+                <p style="margin-top: 8px;">I am having a strong urge right now. Can you stay with me for 10 minutes?</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="resources">
+            <p class="eyebrow">Resources</p>
+            <h1>Help outside the app.</h1>
+            <p class="lead">The support coach is not a therapist or emergency service. Use these when risk is high.</p>
+
+            <div class="stack">
+              <article class="card">
+                <h2>Immediate support</h2>
+                <div class="option-grid">
+                  <button class="option">NCPG helpline <span>Call / text</span></button>
+                  <button class="option">988 crisis support <span>Self-harm or immediate danger</span></button>
+                  <button class="option">SAMHSA treatment locator <span>Find treatment</span></button>
+                  <button class="option">Support groups <span>Find meetings</span></button>
+                </div>
+              </article>
+
+              <article class="card soft">
+                <h2>Safety rule</h2>
+                <p style="margin-top: 8px;">If you might hurt yourself or someone else, contact emergency support now. You do not have to handle that moment alone.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="settings">
+            <p class="eyebrow">Settings</p>
+            <h1>Privacy-first by default.</h1>
+            <p class="lead">Control data, notifications, emergency preferences, and coach safety behavior.</p>
+
+            <div class="stack">
+              <article class="card">
+                <div class="list">
+                  <div class="list-row"><div class="icon teal">P</div><div><strong>Privacy controls</strong><span>Encrypted sensitive data and private coach history.</span></div><span class="toggle"></span></div>
+                  <div class="list-row"><div class="icon blue">D</div><div><strong>Data export/delete</strong><span>Download or delete your records.</span></div><button class="secondary">Manage</button></div>
+                  <div class="list-row"><div class="icon amber">N</div><div><strong>Notifications</strong><span>Encouragement and accountability prompts.</span></div><span class="toggle"></span></div>
+                  <div class="list-row"><div class="icon coral">E</div><div><strong>Emergency contact</strong><span>Optional, never forced.</span></div><button class="secondary">Set</button></div>
+                </div>
+              </article>
+
+              <article class="card soft">
+                <h2>Coach safety rules</h2>
+                <p style="margin-top: 8px;">PAUSE never gives betting advice, picks, predictions, bankroll strategy, or tips for smaller bets. It helps create distance between urge and action.</p>
+              </article>
+
+              <article class="card">
+                <h2>Architecture model</h2>
+                <div class="mini-grid">
+                  <div class="mini-card"><b>React Native MVP</b><span>Mobile-first app shell.</span></div>
+                  <div class="mini-card"><b>Secure backend</b><span>Encrypted sensitive data.</span></div>
+                  <div class="mini-card"><b>Coach engine</b><span>Structured responses trigger timers and checklists.</span></div>
+                  <div class="mini-card"><b>Safety checks</b><span>Review support messages before and after replies.</span></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="more">
+            <p class="eyebrow">More</p>
+            <h1>Deeper tools, when you need them.</h1>
+            <p class="lead">The free app helps you pause today. Paid plans help you prepare for tomorrow.</p>
+
+            <div class="stack">
+              <article class="card hero">
+                <div>
+                  <p class="eyebrow" style="color: var(--mint); margin-bottom: 8px;">Why upgrade?</p>
+                  <h2>Practice the next helpful thought before the urge gets loud.</h2>
+                  <p style="margin-top: 8px;">Paid PAUSE turns check-ins into helpful prompts, payday reminders, weekly summaries, and a personal prevention playbook.</p>
+                </div>
+              </article>
+
+              <article class="card">
+                <h2>MVP screens</h2>
+                <div class="option-grid">
+                  <button class="option" data-jump="insights">Before the Bet <span>&gt;</span></button>
+                  <button class="option" data-jump="resources">Resources <span>&gt;</span></button>
+                  <button class="option" data-jump="settings">Settings <span>&gt;</span></button>
+                  <button class="option" data-jump="onboarding">Onboarding <span>&gt;</span></button>
+                </div>
+              </article>
+
+              <article class="card soft">
+                <h2>Product principle</h2>
+                <p style="margin-top: 8px;">The coach is not here to discuss gambling. It is here to create distance between urge and action.</p>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <nav class="tabbar" aria-label="Main navigation">
+          <button class="tab active" data-tab="home" aria-label="Home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-7h6v7"/></svg>
+            Home
+          </button>
+          <button class="tab" data-tab="support" aria-label="Urge Support">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v18"/><path d="M7 8a5 5 0 0 1 10 0c0 4-5 5-5 9"/></svg>
+            Coach
+          </button>
+          <button class="tab" data-tab="checkin" aria-label="Daily Check-In">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 4h14v16H5z"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
+            Check
+          </button>
+          <button class="tab" data-tab="plan" aria-label="Protection Plan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3 20 7v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4Z"/><path d="m9 12 2 2 4-5"/></svg>
+            Plan
+          </button>
+          <button class="tab" data-tab="more" aria-label="More">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 7h14"/><path d="M5 12h14"/><path d="M5 17h14"/></svg>
+            More
+          </button>
+        </nav>
+      </div>
+
+      <aside class="notes">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>
+            <p class="eyebrow" style="margin: 0;">Private recovery MVP</p>
+            <h2>PAUSE</h2>
+          </div>
+        </div>
+        <h1>Private support that creates distance between urge and action.</h1>
+        <p class="summary">This newer model focuses the first screen on one action: disclose the urge privately, delay action, and take one protective step before gambling.</p>
+        <div class="feature-grid">
+          <div class="feature">
+            <b>Urge support</b>
+            <p>Validated disclosure, quick risk questions, timer, voice input, and intervention prompts.</p>
+          </div>
+          <div class="feature">
+            <b>Recovery safety rules</b>
+            <p>No betting advice, odds, picks, bankroll strategy, or smaller-bet encouragement.</p>
+          </div>
+          <div class="feature">
+            <b>MVP recovery tools</b>
+            <p>Daily check-in, pattern insights, resources, and protection plan.</p>
+          </div>
+          <div class="feature">
+            <b>Privacy-first path</b>
+            <p>Private disclosure first, real-world support encouraged when appropriate, never forced.</p>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const tabs = [...document.querySelectorAll("[data-tab]")];
+    const screens = [...document.querySelectorAll("[data-screen]")];
+    const primaryTabs = ["home", "support", "checkin", "plan", "more"];
+
+    function showScreen(name) {
+      const activeTab = primaryTabs.includes(name) ? name : "more";
+      screens.forEach((screen) => {
+        screen.classList.toggle("active", screen.dataset.screen === name);
+      });
+      tabs.forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.tab === activeTab);
+      });
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => showScreen(tab.dataset.tab));
+    });
+
+    document.querySelectorAll("[data-jump]").forEach((button) => {
+      button.addEventListener("click", () => showScreen(button.dataset.jump));
+    });
+
+    const urgeRange = document.getElementById("urgeRange");
+    const urgeValue = document.getElementById("urgeValue");
+    urgeRange.addEventListener("input", () => {
+      urgeValue.textContent = urgeRange.value;
+    });
+
+    let delaySeconds = 300;
+    let delayId = null;
+    const delayTimer = document.getElementById("delayTimer");
+    const delayButton = document.getElementById("delayButton");
+
+    function renderDelay() {
+      const minutes = String(Math.floor(delaySeconds / 60)).padStart(2, "0");
+      const seconds = String(delaySeconds % 60).padStart(2, "0");
+      delayTimer.textContent = `${minutes}:${seconds}`;
+    }
+
+    delayButton.addEventListener("click", () => {
+      if (delayId) {
+        clearInterval(delayId);
+        delayId = null;
+        delayButton.textContent = "Resume pause";
+        return;
+      }
+      delayButton.textContent = "Pause timer";
+      delayId = setInterval(() => {
+        delaySeconds = Math.max(0, delaySeconds - 1);
+        renderDelay();
+        if (delaySeconds === 0) {
+          clearInterval(delayId);
+          delayId = null;
+          delayButton.textContent = "Restart 5 minute pause";
+          delaySeconds = 300;
+        }
+      }, 1000);
+    });
+
+    const chat = document.querySelector(".chat");
+    const coachInput = document.getElementById("coachInput");
+    const sendCoach = document.getElementById("sendCoach");
+
+    function addCoachMessage(text) {
+      const user = document.createElement("div");
+      user.className = "bubble user";
+      user.textContent = text;
+      chat.appendChild(user);
+
+      const ai = document.createElement("div");
+      ai.className = "bubble ai";
+      ai.textContent = "I am glad you told me before acting. Stay with me for 60 seconds. Has the urge gone up, down, or stayed the same?";
+      chat.appendChild(ai);
+    }
+
+    sendCoach.addEventListener("click", () => {
+      if (!coachInput.value.trim()) return;
+      addCoachMessage(coachInput.value.trim());
+      coachInput.value = "";
+    });
+
+    document.querySelectorAll(".quick-reply").forEach((button) => {
+      button.addEventListener("click", () => {
+        addCoachMessage(button.textContent.replace(">", "").trim());
+      });
+    });
+  </script>
+</body>
+</html>
