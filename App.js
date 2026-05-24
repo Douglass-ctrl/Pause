@@ -69,9 +69,7 @@ const quickUrgeReplies = [
 const API_BASE_URL =
   typeof process !== "undefined" && process.env?.EXPO_PUBLIC_API_BASE_URL
     ? process.env.EXPO_PUBLIC_API_BASE_URL
-    : typeof __DEV__ !== "undefined" && __DEV__
-      ? "http://127.0.0.1:8788"
-      : "https://your-pause-coach-api.example.com";
+    : "https://pause-4nob.onrender.com";
 
 function formatTime(totalSeconds) {
   const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");

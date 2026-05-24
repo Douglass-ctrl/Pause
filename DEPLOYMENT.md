@@ -24,7 +24,7 @@ Recommended first host: Render.
 After deploy, the API should answer:
 
 ```text
-https://your-pause-coach-api.onrender.com/health
+https://pause-4nob.onrender.com/health
 ```
 
 Expected response:
@@ -43,19 +43,19 @@ Expected response:
 Set the public API URL for Expo builds:
 
 ```bash
-EXPO_PUBLIC_API_BASE_URL=https://your-pause-coach-api.onrender.com
+EXPO_PUBLIC_API_BASE_URL=https://pause-4nob.onrender.com
 ```
 
 For local web testing, add this to `.env`:
 
 ```bash
-EXPO_PUBLIC_API_BASE_URL=https://your-pause-coach-api.onrender.com
+EXPO_PUBLIC_API_BASE_URL=https://pause-4nob.onrender.com
 ```
 
 For EAS production builds:
 
 ```bash
-eas secret:create --scope project --name EXPO_PUBLIC_API_BASE_URL --value https://your-pause-coach-api.onrender.com
+eas secret:create --scope project --name EXPO_PUBLIC_API_BASE_URL --value https://pause-4nob.onrender.com
 ```
 
 The OpenAI key must stay on the backend only:
@@ -71,13 +71,13 @@ Do not create `EXPO_PUBLIC_OPENAI_API_KEY`.
 Health:
 
 ```bash
-curl https://your-pause-coach-api.onrender.com/health
+curl https://pause-4nob.onrender.com/health
 ```
 
 Coach message:
 
 ```bash
-curl -X POST https://your-pause-coach-api.onrender.com/v1/coach/message \
+curl -X POST https://pause-4nob.onrender.com/v1/coach/message \
   -H "Content-Type: application/json" \
   -d "{\"message\":\"My urge is 8/10 and I am about to deposit $200 while alone\",\"conversation\":[]}"
 ```
