@@ -27,8 +27,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "replace-with-eas-project-id"
+        "projectId": "478da514-975b-4204-ba62-8d7a41267dd6"
       }
-    }
+    },
+    "owner": "sss-teve"
   }
 }
