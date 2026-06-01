@@ -16,7 +16,8 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.pause.recovery",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "PAUSE uses microphone access only when you choose to speak to the support coach."
+        "NSMicrophoneUsageDescription": "PAUSE uses microphone access only when you choose to speak to the support coach.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
