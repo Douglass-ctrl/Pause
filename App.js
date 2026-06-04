@@ -13,10 +13,12 @@ import {
 } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-const colors = {
+const lightColors = {
   bg: "#f4f7f3",
   surface: "#ffffff",
   soft: "#e9f1ec",
+  field: "#fbfdfc",
+  tabbar: "rgba(255,255,255,0.96)",
   ink: "#111b1d",
   muted: "#667276",
   line: "#d8e2dd",
@@ -29,9 +31,30 @@ const colors = {
   lavender: "#8580b8"
 };
 
+const darkColors = {
+  bg: "#0e1415",
+  surface: "#151f20",
+  soft: "#203331",
+  field: "#101819",
+  tabbar: "rgba(14,20,21,0.96)",
+  ink: "#f1f7f4",
+  muted: "#a7b7b5",
+  line: "#2d4240",
+  deep: "#082f2d",
+  teal: "#48a99f",
+  mint: "#8fd8c0",
+  blue: "#7aa3c7",
+  amber: "#e1b86d",
+  coral: "#df7f72",
+  lavender: "#aaa4dc"
+};
+
+let colors = lightColors;
+let styles = createStyles(lightColors);
+
 const primaryTabs = [
   { id: "home", label: "Home", icon: "H" },
-  { id: "support", label: "Coach", icon: "Co" },
+  { id: "support", label: "Support", icon: "S" },
   { id: "checkin", label: "Check", icon: "C" },
   { id: "plan", label: "Plan", icon: "P" },
   { id: "more", label: "More", icon: "M" }
@@ -472,7 +495,7 @@ function AISupportScreen({ go }) {
       <Card>
         <View style={styles.rowBetween}>
           <Text style={styles.h2}>Private Support Coach</Text>
-          <Pill>Coach</Pill>
+          <Pill>Support</Pill>
         </View>
         <View style={styles.chat}>
           {chat.map((item, index) => (
@@ -483,7 +506,6 @@ function AISupportScreen({ go }) {
         </View>
         <View style={styles.composer}>
           <TextInput value={message} onChangeText={setMessage} style={styles.input} placeholder="Tell PAUSE what you feel" />
-          <SecondaryButton onPress={() => {}}>Mic</SecondaryButton>
           <SecondaryButton onPress={() => sendCoachMessage(message)}>Send</SecondaryButton>
         </View>
       </Card>
@@ -770,7 +792,7 @@ function PlansScreen() {
           </View>
           <Pill>Short-term</Pill>
         </View>
-        <Text style={styles.body}>For a high-risk week: unlimited coach conversations, voice input, trigger tracking, and payday reminders.</Text>
+        <Text style={styles.body}>For a high-risk week: unlimited coach conversations, deeper trigger tracking, and payday reminders.</Text>
         <Text style={styles.planPromise}>Best when you need support right now.</Text>
       </Card>
       <Card>
@@ -799,7 +821,7 @@ function PlansScreen() {
   );
 }
 
-function SettingsScreen({ go }) {
+function SettingsScreen({ go, isDark, setIsDark }) {
   return (
     <Screen
       eyebrow="Settings"
@@ -808,6 +830,7 @@ function SettingsScreen({ go }) {
     >
       <Card>
         <View style={styles.list}>
+          <RowItem icon="M" title="Dark mode" body="Use a deeper palette for evening support." color={colors.deep} action={<Switch value={isDark} onValueChange={setIsDark} />} />
           <RowItem icon="P" title="Privacy controls" body="Encrypted sensitive data and private coach history." action={<Switch value />} />
           <RowItem icon="D" title="Data export/delete" body="Download or delete your records." color={colors.blue} action={<SecondaryButton>Manage</SecondaryButton>} />
           <RowItem icon="N" title="Notifications" body="Encouragement and accountability prompts." color={colors.amber} action={<Switch value />} />
@@ -870,7 +893,11 @@ function MoreScreen({ go }) {
 
 function AppShell() {
   const [screen, setScreen] = useState("home");
+  const [isDark, setIsDark] = useState(false);
 
+  const activeColors = isDark ? darkColors : lightColors;
+  colors = activeColors;
+  styles = useMemo(() => createStyles(activeColors), [activeColors]);
   const activeTab = useMemo(() => (primaryTabs.some((tab) => tab.id === screen) ? screen : "more"), [screen]);
 
   function renderScreen() {
@@ -888,7 +915,7 @@ function AppShell() {
       case "resources":
         return <ResourcesScreen />;
       case "settings":
-        return <SettingsScreen go={setScreen} />;
+        return <SettingsScreen go={setScreen} isDark={isDark} setIsDark={setIsDark} />;
       case "plans":
         return <PlansScreen />;
       case "more":
@@ -901,7 +928,7 @@ function AppShell() {
 
   return (
     <SafeAreaView style={styles.app}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
       {renderScreen()}
       <View style={styles.tabbar}>
         {primaryTabs.map((tab) => (
@@ -923,7 +950,8 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors) {
+  return StyleSheet.create({
   app: {
     flex: 1,
     backgroundColor: colors.bg
@@ -1092,7 +1120,7 @@ const styles = StyleSheet.create({
     marginTop: 14
   },
   miniCard: {
-    backgroundColor: "#fbfdfc",
+    backgroundColor: colors.field,
     borderColor: colors.line,
     borderRadius: 16,
     borderWidth: 1,
@@ -1258,7 +1286,7 @@ const styles = StyleSheet.create({
     marginTop: 14
   },
   input: {
-    backgroundColor: "#fbfdfc",
+    backgroundColor: colors.field,
     borderColor: colors.line,
     borderRadius: 999,
     borderWidth: 1,
@@ -1274,7 +1302,7 @@ const styles = StyleSheet.create({
   },
   option: {
     alignItems: "center",
-    backgroundColor: "#fbfdfc",
+    backgroundColor: colors.field,
     borderColor: colors.line,
     borderRadius: 15,
     borderWidth: 1,
@@ -1343,7 +1371,7 @@ const styles = StyleSheet.create({
     marginTop: 12
   },
   tabbar: {
-    backgroundColor: "rgba(255,255,255,0.96)",
+    backgroundColor: colors.tabbar,
     borderColor: colors.line,
     borderTopWidth: 1,
     bottom: 0,
@@ -1379,4 +1407,5 @@ const styles = StyleSheet.create({
   activeTabText: {
     color: colors.teal
   }
-});
+  });
+}
